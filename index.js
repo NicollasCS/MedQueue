@@ -1,13 +1,20 @@
-require('dotenv').config();
-const database = require('./src/config/database');
-const express = require('express');
-const Routes = require('./src/config/routes');
+// ===============================
+// index.js
+// ===============================
+const express = require("express");
+const app = express();
 
-database.authenticate();
+const db = require("./src/config/database");
+const routes = require("./src/routes");
 
-let app = express();
 app.use(express.json());
-Routes(app);
+app.use(routes);
 
-database.sync({ alter: true });
-app.listen(6767);
+db.sync()
+.then(() => {
+  console.log("Banco conectado");
+  app.listen(3000, () => {
+    console.log("Servidor rodando na porta 3000");
+  });
+})
+.catch(err => console.log(err));
